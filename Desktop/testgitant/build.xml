@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project name="git-tst">
+
+
+    <macrodef name="git">
+        <attribute name="command"/>
+        <attribute name="dir" default=""/>
+        <element name="args" optional="true"/>
+        <sequential>
+            <echo file="GIT_COMMAND_LOG" message="git @{command} &#xa;"
+                  append="yes"/>
+            <exec executable="git" dir="@{dir}">
+                <arg value="@{command}"/>
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="git-init">
+        <attribute name="repository" default=""/>
+        <sequential>
+            <git command="init">
+                <args>
+                    <arg value="@{repository}"/>
+                </args>
+            </git>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="git-add">
+        <attribute name="path" default=""/>
+        <attribute name="target"/>
+        <sequential>
+            <git command="add" dir="@{path}">
+                <args>
+                    <arg value="@{target}"/>
+                </args>
+            </git>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="git-commit">
+        <attribute name="path"/>
+        <attribute name="message"/>
+        <sequential>
+            <git command="commit -m" dir="@{path}">
+                <args>
+                    <arg value="@{message}"/>
+                </args>
+            </git>
+        </sequential>
+    </macrodef>
+
+    <target name="task">
+        <git-init/>
+        <git-add target="."/>
+    </target>
+</project>
