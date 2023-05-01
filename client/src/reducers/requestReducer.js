@@ -10,10 +10,9 @@ export default function requestReducer(state = initialState, action) {
   const {errorMessage, isLoading} = action.payload || {}
   switch (action.type) {
     case SET_REQUEST_STATUS:
-      const newState = {...state}
-      if (isLoading) newState["isLoading"] = isLoading
-      if (errorMessage) newState["errorMessage"] = errorMessage
-      return newState
+      if (isLoading) state["isLoading"] = isLoading
+      if (errorMessage) state["errorMessage"] = errorMessage
+      return {...state}
     case CLEAR_REQUEST_ERROR:
       return {...state, errorMessage: null}
     default:
@@ -21,13 +20,13 @@ export default function requestReducer(state = initialState, action) {
   }
 }
 
-export const makeRequest = (requestAcCallback) => async (dispatch) => {
+export const makeRequest = (requestCallback) => async (dispatch) => {
   try {
     dispatch({
       type: SET_REQUEST_STATUS,
       payload: {isLoading: true},
     })
-    await dispatch(requestAcCallback())
+    await dispatch(requestCallback())
     dispatch({
       type: SET_REQUEST_STATUS,
       payload: {isLoading: false},
