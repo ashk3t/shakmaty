@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect} from "react"
+import React from "react"
 import classes from "../../styles/pages/MainPage.module.css"
 import friends from "../../assets/mainPageImgs/friends.png"
 import DropDownButton from "../../components/buttons/DropDownButton"
@@ -14,10 +14,16 @@ export default function MainPage() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const authUser = useSelector((state) => state.authReducer.authUser)
-  const gameId = useSelector((state) => state.gameReducer.gameId)
   const timeMode = useSelector((state) => state.gameReducer.timeMode)
 
-  useCompletedRequest("InitGame", () => navigate(CHESS_BOARD_PATH))
+  useCompletedRequest("InitGame", () => {
+    // TODO появляется только при нахождении игры, а не начале поиска ИЛИ сделать 2 уведомлялки
+    Swal.fire({
+      icon: "success",
+      title: "The game was found",
+    })
+    navigate(CHESS_BOARD_PATH)
+  })
 
   return (
     <div className={classes.menu}>
@@ -40,13 +46,6 @@ export default function MainPage() {
           className={classes.play}
           onClick={() => {
             dispatch(makeRequest(() => initGame(authUser), "InitGame"))
-            // TODO появляется только при успешном запуске ЛИБО изменить текст уведомления
-            Swal.fire({
-              icon: "success",
-              title: "Success",
-              type: "success",
-              text: "Your work has been saved.",
-            })
           }}
         >
           Играть!
