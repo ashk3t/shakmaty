@@ -1,11 +1,13 @@
 # Personal
-pyrightconfig.json
 .vscode/
-todo.md
+.DS_Store/
+.idea/
+pyrightconfig.json
 
 # Python
 __pycache__/
 .venv/
+venv/
 
 # Django
 migrations/
