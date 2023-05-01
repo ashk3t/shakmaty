@@ -21,26 +21,25 @@ export default function requestReducer(state = initialState, action) {
   }
 }
 
-export const requestAction = (requestCallback) => async (dispatch) => {
+export const requestAC = (requestCallback) => async (dispatch) => {
   try {
     dispatch({
       type: UPDATE_REQUEST_STATUS,
       payload: {isLoading: true},
     })
-    await requestCallback()
+    dispatch(requestCallback())
     dispatch({
       type: UPDATE_REQUEST_STATUS,
       payload: {isLoading: false},
     })
-    dispatch({type: CLOSE_MODAL})
   } catch (error) {
     dispatch({
       type: UPDATE_REQUEST_STATUS,
-      payload: {messages, isLoading: false},
+      payload: {error, isLoading: false},
     })
   }
 }
 
-export const clearErrorsAction = () => (dispatch) => {
+export const clearErrorsAC = () => (dispatch) => {
   dispatch({type: CLEAR_ERRORS})
 }
