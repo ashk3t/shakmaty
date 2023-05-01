@@ -1,62 +1,60 @@
-import {useRef, useEffect, useState} from "react"
+import {useEffect, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
-import {COORDS} from "../consts/game"
-import {movePiece} from "../reducers/gameReducer"
+import Color from "../models/Color"
+import {movePiece, selectPiece} from "../reducers/gameReducer"
 
-export default function Board({whiteMove, setWhiteMove}) {
+export default function BoardComponent() {
   const dispatch = useDispatch()
-  const pieces = useSelector((state) => state.gameReducer.pieces)
-  const [moving, setMoving] = useState(false)
-  const clickedSquare = useRef("")
-  const selectedPiece = useRef("")
+  // const board = useSelector((state) => state.gameReducer.board) Видимо такая хероборина не чекает в глубину :/
+  const {board} = useSelector((state) => state.gameReducer)
 
-  function handleMove(e) {
-    if (!moving) {
-      clickedSquare.current = e.target.id
-      selectedPiece.current = e.target.className
-      e.target.classList.toggle("selected-piece")
+  function handleMove(event) {
+    event.stopPropagation()
+    const index = parseInt(event.target.id)
+    if (board.selectedPiece) {
+      dispatch(movePiece(index))
     } else {
-      if (e.target.id === clickedSquare.current) {
-        e.target.className = selectedPiece.current
-        return
-      }
-      dispatch(movePiece(clickedSquare, selectedPiece, e))
-      setWhiteMove((prev) => !prev)
+      dispatch(selectPiece(index))
     }
-    setMoving(!moving)
   }
 
   return (
-    <>
-      <div id="board">
-        {COORDS.map((row, x) =>
-          row.map((c, y) =>
-            y % 2 ? (
+    <div id="board-area">
+      {board && (
+        <>
+          <div id="board">
+            {board.squares.map((square, i) => (
               <div
-                key={`board-${c}`}
-                className={x % 2 ? "light-square" : "dark-square"}
+                key={i}
+                className={
+                  square.color === Color.WHITE ? "light-square" : "dark-square"
+                }
               ></div>
-            ) : (
+            ))}
+          </div>
+          <div id="pieces">
+            {board.squares.map(({piece}, i) => (
               <div
-                key={`board-${c}`}
-                className={x % 2 ? "dark-square" : "light-square"}
+                id={i}
+                key={i}
+                className={`piece ${
+                  piece && piece.selected && "selected-piece"
+                }`}
+                style={piece && {backgroundImage: `url(${piece.image})`}}
+                onClick={(event) => handleMove(event)}
               ></div>
-            )
-          )
-        )}
-      </div>
-      <div id="pieces">
-        {COORDS.map((row, x) =>
-          row.map((c, y) => (
-            <div
-              key={`piece-${c}`}
-              className={pieces[c] ? pieces[c] : ""}
-              onClick={(e) => handleMove(e)}
-              id={`${c}`}
-            ></div>
-          ))
-        )}
-      </div>
-    </>
+            ))}
+          </div>
+          <div id="hints">
+            {board.squares.map((square, i) => (
+              <div
+                key={i}
+                className={square.possibleMove ? "hint" : null}
+              ></div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   )
 }

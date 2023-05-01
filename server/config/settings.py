@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    "user_app.apps.AuthConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,8 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "rest_framework",
     "corsheaders",
-    "chess_game",
-    "app_auth.apps.AuthConfig",
+    "chess_game"
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -73,16 +73,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-# DATABASES = {"default": metadata["database-default"]}  # PostgreSQL
+#DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.sqlite3",
+#        "NAME": BASE_DIR / "db.sqlite3",
+#    }
+#}
+DATABASES = {"default": metadata["database-default"]}  # PostgreSQL
 
 # Custom user model
-AUTH_USER_MODEL = "app_auth.User"
+AUTH_USER_MODEL = "user_app.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -111,12 +111,14 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:3000",
     "http://localhost:3000",
+    "http://127.0.0.1:8000",
     "http://localhost:8000",
-    "http://localhost:8080",
-)
+]
+CORS_ALLOW_CREDENTIALS = True
+
 
 # REST framework extensions
 REST_FRAMEWORK = {

@@ -1,8 +1,8 @@
-from django.contrib.auth.models import User
+from user_app.models import User
 from datetime import datetime
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from auth.serializers import UserWithTokenSerializer
+from user_app.serializers import UserWithTokenSerializer
 
 
 class AuthService:
