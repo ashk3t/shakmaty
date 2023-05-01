@@ -2,7 +2,7 @@ import {useEffect} from "react"
 import {useDispatch, useSelector} from "react-redux"
 import {clearRequest} from "../reducers/requestReducer"
 
-export default function useCompletedRequest(label, callback = null) {
+export default function useCompletedRequest(label, callback = null, message = null) {
   const dispatch = useDispatch()
   const completedLabel = useSelector(
     (state) => state.requestReducer.completedLabel
@@ -11,6 +11,7 @@ export default function useCompletedRequest(label, callback = null) {
   useEffect(() => {
     if (completedLabel !== label) return
     if (callback) callback()
+    if (message) alert(message)
     dispatch(clearRequest())
   }, [completedLabel])
 }

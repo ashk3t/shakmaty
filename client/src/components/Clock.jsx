@@ -17,7 +17,6 @@ export default function Clock() {
     setBlackTime(blackTimer)
   }, [whiteTimer, blackTimer])
 
-  // TODO адекватный формат времени
   useEffect(() => {
     const pTime = setInterval(() => {
       if (turn === Color.WHITE) {

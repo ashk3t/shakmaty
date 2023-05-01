@@ -1,6 +1,5 @@
 import {useEffect} from "react"
 import {useDispatch, useSelector} from "react-redux"
-import Swal from "sweetalert2"
 import {clearRequest} from "../reducers/requestReducer"
 
 export default function useErrorMessage() {
@@ -8,13 +7,9 @@ export default function useErrorMessage() {
   const errorMessage = useSelector((state) => state.requestReducer.errorMessage)
 
   useEffect(() => {
+    // TODO сделать отдельное окошко с уведомлением для ошибки
     if (errorMessage) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        type: "success",
-        text: errorMessage,
-      })
+      alert(errorMessage)
       dispatch(clearRequest())
     }
   }, [errorMessage])

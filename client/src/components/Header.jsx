@@ -24,7 +24,6 @@ export default function Header() {
           <img
             className={classes.avatar}
             src={(authUser && authUser.picture) || mister}
-            alt="avatar"
           />
         </div>
         <div className={classes.username}>

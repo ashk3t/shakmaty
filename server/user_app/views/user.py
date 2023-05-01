@@ -37,6 +37,7 @@ class AuthUserPictureDetail(APIView):
         user = request.user
         user.picture.delete()
         user.picture = request.FILES.get("picture")
+        user.validate()
         user.save()
         serializer = UserSerializer(user)
         return Response(serializer.data["picture"])
