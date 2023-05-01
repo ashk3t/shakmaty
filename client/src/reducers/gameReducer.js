@@ -1,42 +1,48 @@
-import {INITIAL_PIECES} from "../consts/game"
+import {INITIAL_PIECES} from '../consts/game';
+import axios from 'axios';
 
-const ADD_PIECE = "ADD_PIECE"
-const MOVE_PIECE = "MOVE_PIECE"
+const INIT = "INIT";
+const API_URL = 'http://localhost:8000';
 
-const initialState = {
+export const NEW_GAME = {
   pieces: INITIAL_PIECES,
   castledBlack: false,
   castledWhite: false,
-}
+};
 
-export default function gameReducer(state = initialState, action) {
-  switch (action.type) {
-    case ADD_PIECE:
-      return {
-        ...state,
-        pieces: {...state.pieces, [action.payload.to]: action.payload.piece},
-      }
-    case MOVE_PIECE:
-      return {
-        ...state,
-        pieces: {
-          ...state.pieces,
-          [action.payload.from]: undefined,
-          [action.payload.to]: action.payload.piece,
-        },
-      }
-    default:
-      return state
-  }
-}
+export const gameReducer = (state, action) => {
 
-export const movePiece = (clickedSquare, selectedPiece, e) => {
-  return {
-    type: "MOVE_PIECE",
-    payload: {
-      from: clickedSquare.current,
-      to: e.target.id,
-      piece: selectedPiece.current,
-    },
+  switch(action.type) {
+  case "INIT":
+    console.log("HIT INIT");
+    return {...NEW_GAME};
+  case "ADD":
+    return {
+      ...state,
+      pieces: {...state.pieces,
+		[action.payload.to]: action.payload.piece}};
+  case "MOVE":
+    return {
+      ...state,
+      pieces: {...state.pieces,
+	       [action.payload.from]: undefined,
+	       [action.payload.to]: action.payload.piece}};
+  default:
+    return null;
   }
+};
+
+export const initGame = (args) => async (dispatch) => {
+  const resp = await axios({
+    method: 'post',
+    url: `${API_URL}/game/init_game`,
+    headers: {'content-type': 'application/json'},
+    data: {
+      white_player: 2,
+      black_player: 3,
+      timer: "00:01:00",
+    }
+  });
+  console.log(resp.data);
+  console.log(dispatch);
 }

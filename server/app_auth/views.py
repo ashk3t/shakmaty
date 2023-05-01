@@ -11,6 +11,7 @@ from app_auth.models import User
 from app_auth.exceptions import HttpException
 from app_auth.serializers import UserSerializer
 from app_auth.services import AuthService
+import requests
 
 
 @api_view(["POST"])

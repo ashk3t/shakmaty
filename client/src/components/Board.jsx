@@ -1,62 +1,62 @@
-import {useRef, useEffect, useState} from "react"
-import {useDispatch, useSelector} from "react-redux"
-import {COORDS} from "../consts/game"
-import {movePiece} from "../reducers/gameReducer"
+import '../index.css';
+import {useRef, useEffect, useState} from 'react';
+import {useGame} from "../hooks/useGame";
+import {COORDS} from "../consts/game";
 
 export default function Board({whiteMove, setWhiteMove}) {
-  const dispatch = useDispatch()
-  const pieces = useSelector((state) => state.gameReducer.pieces)
-  const [moving, setMoving] = useState(false)
-  const clickedSquare = useRef("")
-  const selectedPiece = useRef("")
+  const [state, dispatch] = useGame();
+  const [moving, setMoving] = useState(false);
+  const {pieces} = state;
+  const clickedSquare = useRef("");
+  const selectedPiece = useRef("");
 
-  function handleMove(e) {
+  const handleMove = e => {
     if (!moving) {
-      clickedSquare.current = e.target.id
-      selectedPiece.current = e.target.className
-      e.target.classList.toggle("selected-piece")
+      setMoving(true);
+      clickedSquare.current = e.target.id;
+      selectedPiece.current = e.target.className;
+      e.target.classList.toggle("selected-piece");
+      return;
     } else {
+      setMoving(false);
       if (e.target.id === clickedSquare.current) {
-        e.target.className = selectedPiece.current
-        return
+	e.target.className = selectedPiece.current;
+        return;
       }
-      dispatch(movePiece(clickedSquare, selectedPiece, e))
-      setWhiteMove((prev) => !prev)
+      dispatch({
+        type: "MOVE",
+        payload: {
+          from: clickedSquare.current,
+          to: e.target.id,
+          piece: selectedPiece.current
+        }
+      });
+      setWhiteMove(prev => !prev);
+      return;
     }
-    setMoving(!moving)
-  }
+  };
 
   return (
     <>
-      <div id="board">
-        {COORDS.map((row, x) =>
-          row.map((c, y) =>
-            y % 2 ? (
-              <div
-                key={`board-${c}`}
-                className={x % 2 ? "light-square" : "dark-square"}
-              ></div>
-            ) : (
-              <div
-                key={`board-${c}`}
-                className={x % 2 ? "dark-square" : "light-square"}
-              ></div>
-            )
-          )
-        )}
-      </div>
-      <div id="pieces">
-        {COORDS.map((row, x) =>
-          row.map((c, y) => (
-            <div
-              key={`piece-${c}`}
-              className={pieces[c] ? pieces[c] : ""}
-              onClick={(e) => handleMove(e)}
-              id={`${c}`}
-            ></div>
-          ))
-        )}
-      </div>
+    <div id="board">
+      {COORDS.map((row, x) => (row.map((c, y) => (
+	  y % 2
+	  ? <div className={x % 2 ? "light-square" : "dark-square"}
+		  key={`board-${c}`}></div>
+	  : <div className={x % 2 ? "dark-square" : "light-square"}
+		key={`board-${c}`}></div>
+	))
+      ))}
+    </div>
+    <div id="pieces">
+      {COORDS.map((row, x) => (row.map((c, y) => (
+	<div
+	  className={pieces[c] ? pieces[c] : ""}
+	  onClick={(e) => handleMove(e)}
+	  key={`piece-${c}`} id={`${c}`}></div>
+	))
+      ))}
+    </div>
     </>
-  )
-}
+  );
+};
