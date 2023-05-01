@@ -1,37 +1,45 @@
 import classes from "../styles/Table.module.css"
-import React from "react";
-const data = [
-    { rang: 1, rating: 19, name: "Semen Orex", year: "10-2000", country:"Russia" },
-    { rang: 2, rating: 29, name: "Danya Dudov", year: "01-2001", country:"Russia" },
-    { rang: 3, rating: 1, name: "Polina Shpineva", year: "07-2002", country:"Germany" },
-    { rang: 4, rating: 3, name: "Maria Murkl", year: "11-2002", country:"Spain" },
-    { rang: 5, rating: 4, name: "Taya Klimakova", year: "04-2002", country:"Turkey" },
-]
-function Table() {
-    return (
-        <div className={classes.NameClass}>
-            <table>
-                <tr>
-                    <th>Rang</th>
-                    <th>Rating</th>
-                    <th>Gender</th>
-                    <th>Month-Year</th>
-                    <th>Country</th>
+import React from "react"
+import axios from "axios"
+import {useEffect, useState} from "react"
+import GameService from "../services/GameService"
 
-                </tr>
-                {data.map((val, key) => {
-                    return (
-                        <tr key={key}>
-                            <td>{val.rang}</td>
-                            <td>{val.rating}</td>
-                            <td>{val.name}</td>
-                            <td>{val.year}</td>
-                            <td>{val.country}</td>
-                        </tr>
-                    )
-                })}
-            </table>
-        </div>
-    );
+const API_URL = "http://localhost:8000"
+
+function Table() {
+  const [ratingData, setRatingData] = useState([])
+
+  useEffect(() => {
+    GameService.getRating().then((data) => setRatingData(data))
+  }, [])
+
+  return (
+    <div className={classes.NameClass}>
+      <table className={classes.rateTable}>
+        <thead>
+          <tr>
+            <th>Rang</th>
+            <th>Rating</th>
+            <th>Name</th>
+            <th>Date joined</th>
+            <th>Country</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ratingData.map((val, key) => {
+            return (
+              <tr key={key}>
+                <td>{key + 1}</td>
+                <td>{val.rating}</td>
+                <td>{val.username}</td>
+                <td>{Date(val.date_joined).toLocaleString()}</td>
+                <td>{val.country}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
 }
-export default Table;
+export default Table
