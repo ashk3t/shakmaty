@@ -11,7 +11,6 @@ from app_auth.models import User
 from app_auth.exceptions import HttpException
 from app_auth.serializers import UserSerializer
 from app_auth.services import AuthService
-import requests
 
 
 @api_view(["POST"])
@@ -28,7 +27,7 @@ def login(request):
         user = User.objects.get(email=request.data["email"])
     except User.DoesNotExist:
         raise AuthenticationFailed()
-    if not user.check_password(request.data["password"]):
+    if not user.password or not user.check_password(request.data["password"]):
         raise AuthenticationFailed()
     return AuthService.tokenized_response(user)
 
